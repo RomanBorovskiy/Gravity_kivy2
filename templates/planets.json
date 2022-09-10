@@ -1,0 +1,1 @@
+[{"name": "SUN_1", "position": [-50.1, 0.0], "velocity": [0.25, -1.0], "mass": 130.0, "size": 20.0, "color": [1, 1, 0]}, {"name": "SUN_2", "position": [50, 0], "velocity": [-0.25, 1.0], "mass": 130.0, "size": 20.0, "color": [0, 0, 1]}]

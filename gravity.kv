@@ -1,0 +1,155 @@
+#:kivy 1.0
+#:import constants constants
+#:set SPACE_SIZE constants.SPACE_SIZE
+
+#########################################################################################
+<WtPlanet>:
+    canvas:
+        Color:
+            rgb: self.planet.color
+        Ellipse:
+            size: (self.planet.size, self.planet.size)
+            pos: (self.x-self.planet.size/2, self.y-self.planet.size/2)
+        Color:
+            rgb:   (1, 0, 0)
+        Line:
+            width : 1
+            points: self.get_trace() and self.trace
+            #(self.trace if root.show_traces else []) if root.show_traces else []
+            #points: self.trace
+
+    Label:
+        size: self.texture_size
+        halign: 'left'
+        pos: [self.parent.x + self.parent.planet.size/2+2, self.parent.y]
+        text: self.parent.planet.name
+#########################################################################################
+
+<MainWindow>:
+    label_info: info_label
+    btn_start :  button_start
+    scroll_view : SV
+    space : RL
+
+    canvas:
+        #Axes H & V
+        Line:
+            width : 1 if root.show_axes else 0.1
+            points: (0, root.center_y, root.width, root.center_y)
+        Line:
+            width : 1 if root.show_axes else 0.1
+            points: (root.center_x, 0, root.center_x, root.height)
+
+
+
+    Label:
+        id : info_label
+        pos: (0, root.top - self.height)
+        size: self.texture_size
+        halign: 'left'
+        background_color: 1, 0, 0, 1
+        canvas:
+            Color:
+                rgb:(1, 0, 0)
+            Line:
+                width: 1.1
+                rectangle: self.x, self.y, self.width, self.height
+
+
+
+    ScrollView:
+        id : SV
+        do_scroll_x: True
+        do_scroll_y: True
+        scroll_x : .5
+        scroll_y : .5
+        bar_pos_x : "top"
+
+        size: (root.width, root.height)
+        size_hint:(None, None)
+
+        #RelativeLayout:
+        FloatLayout:
+            id : RL
+            size_hint:(None, None)
+            size: SPACE_SIZE , SPACE_SIZE
+
+            canvas.before:
+                PushMatrix:
+
+                Translate:
+                    xy: (self.width/2 ,self.height/2)
+                Scale:
+                    xyz: (root.scale, root.scale, 1)
+            canvas:
+
+            canvas.after:
+                PopMatrix:
+
+
+
+    #MENU
+    BoxLayout:
+        orientation: 'horizontal'
+
+        Button:
+            id: button_start
+            size:(100, 40)
+            size_hint:(None, None)
+            #right: root.right
+            #top: root.top
+            text: 'START'
+            on_press: root.do_start_stop()
+        Button:
+            id: button_load
+            size:(100, 40)
+            size_hint:(None, None)
+            #right: root.right
+            #top: root.top
+            text: 'LOAD'
+            on_press: root.do_load_dialog()
+
+        Button:
+            size:(100, 40)
+            size_hint:(None, None)
+            text: 'HIDE AXES' if root.show_axes else 'SHOW AXES'
+            on_press: root.show_axes = int(not (root.show_axes))
+        Button:
+            size:(150, 40)
+            size_hint:(None, None)
+            text: 'HIDE TRACES' if root.show_traces else 'SHOW TRACES'
+            on_press: root.show_traces = int(not (root.show_traces))
+
+        Button:
+            size:(150, 40)
+            size_hint:(None, None)
+            text: 'CLEAR TRACES'
+            on_press: root.wt_planets_clear_trace()
+
+        Button:
+            size:(150, 40)
+            size_hint:(None, None)
+            text: 'CENTERED'
+            on_press:
+                SV.scroll_x=0.5
+                SV.scroll_y=0.5
+
+
+        Button:
+            size:(40, 40)
+            size_hint:(None, None)
+            text: '+'
+            on_press: root.scale_change(.1)
+
+        Button:
+            size:(40, 40)
+            size_hint:(None, None)
+            text: '-'
+            on_press: root.scale_change(-.1)
+
+        Button:
+            size:(40, 40)
+            size_hint:(None, None)
+            text: '1x'
+            on_press: root.scale_change(0)
+
